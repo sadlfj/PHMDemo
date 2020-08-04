@@ -1,0 +1,107 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>{{ title }}</title>
+
+    {# import jquery #}
+    <script type="text/javascript" src="{% static 'js/jquery-3.5.1.js' %}"></script>
+
+    {# import bootstrap #}
+    <link rel="stylesheet" href=" {% static 'css/bootstrap.css' %} ">
+    <script type="text/javascript" src="{% static 'js/bootstrap.js' %}"></script>
+
+    {# import echarts #}
+    <script type="text/javascript" src="{% static 'js/echarts.js' %}"></script>
+
+    <style>
+        .row {
+            margin-bottom: 20px;
+        }
+
+        .row .row {
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+
+        [class*="col-"] {
+            padding-top: 15px;
+            padding-bottom: 15px;
+            background-color: #80bdff;
+            border: 1px solid;
+
+
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>123</th>
+            <th>234</th>
+            <th>345</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr class="table-primary">
+            <td>aaa</td>
+            <td>bbb</td>
+            <td>ccc</td>
+        </tr>
+        <tr class="table-secondary">
+            <td>aaa</td>
+            <td>bbb</td>
+            <td>ccc</td>
+        </tr>
+        <tr class="table-info">
+            <td>aaa</td>
+            <td>bbb</td>
+            <td>ccc</td>
+        </tr>
+        <tr class="table-success">
+            <td>aaa</td>
+            <td>bbb</td>
+            <td>ccc</td>
+        </tr>
+        <tr class="table-danger">
+            <td>aaa</td>
+            <td>bbb</td>
+            <td>ccc</td>
+        </tr>
+        </tbody>
+    </table>
+
+
+    <div class="row">
+        <div class="col-md-1">.col-md-1</div>
+        <div class="col-md-1">.col-md-1</div>
+        <div class="col-md-1">.col-md-1</div>
+        <div class="col-md-1">.col-md-1</div>
+        <div class="col-md-1">.col-md-1</div>
+        <div class="col-md-1">.col-md-1</div>
+        <div class="col-md-1">.col-md-1</div>
+        <div class="col-md-1">.col-md-1</div>
+        <div class="col-md-1">.col-md-1</div>
+        <div class="col-md-1">.col-md-1</div>
+        <div class="col-md-1">.col-md-1</div>
+        <div class="col-md-1">.col-md-1</div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-7">col-md-7
+            <div class="col-sm-7">
+                col-sm-7
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+</html>

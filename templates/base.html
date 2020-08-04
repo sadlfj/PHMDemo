@@ -1,0 +1,165 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>PHM Demo</title>
+
+    {% block common_css_js %}
+
+        {# import jquery #}
+        <script type="text/javascript" src="{% static 'js/jquery-3.5.1.js' %}"></script>
+
+        {# import bootstrap #}
+        <link rel="stylesheet" href=" {% static 'css/bootstrap.css' %} ">
+        <script type="text/javascript" src="{% static 'js/bootstrap.bundle.js' %}"></script>
+
+        {# import echarts #}
+        <script type="text/javascript" src="{% static 'js/echarts.js' %}"></script>
+        <script type="text/javascript" src="{% static 'js/echarts-gl.js' %}"></script>
+
+
+        {# for customized css left_navbar and sticky-footer #}
+        <link rel="stylesheet" href=" {% static 'css/left-navbar.css' %} ">
+        <link rel="stylesheet" href=" {% static 'css/sticky-footer.css' %} ">
+
+    {% endblock %}
+
+    {% block ext_plugin %}
+
+        {# bootstrap-table #}
+        <link rel="stylesheet" href=" {% static 'plugin/bootstrap-table/bootstrap-table.css' %} ">
+        <script type="text/javascript" src="{% static 'plugin/bootstrap-table/bootstrap-table.js' %}"></script>
+
+        {# bootstrap-select #}
+        <link rel="stylesheet" href=" {% static 'plugin/bootstrap-select/bootstrap-select.css' %} ">
+        <script type="text/javascript" src="{% static 'plugin/bootstrap-select/bootstrap-select.js' %}"></script>
+
+    {% endblock %}
+
+</head>
+<body>
+
+{% block header %}
+{% endblock %}
+
+{% block content %}
+
+    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">SIEMENS PHM</a>
+        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse"
+                data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <input class="form-control form-control-dark w-100" type="text" placeholder="Just an input field for happiness"
+               aria-label="Search">
+        <ul class="navbar-nav px-3">
+            <li class="nav-item text-nowrap">
+                <a class="nav-link" href="#">Sign out</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+                <div class="sidebar-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                Home
+                                <span data-feather="home"></span><span class="sr-only">(current)</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#">
+                                <span data-feather="shopping-cart"></span>
+                                Data Labelling
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span data-feather="shopping-cart"></span>
+                                Connection Setting
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span data-feather="shopping-cart"></span>
+                                balbala....
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span data-feather="shopping-cart"></span>
+                                balbala....
+                            </a>
+                        </li>
+
+                    </ul>
+                    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        <span>Maybe Info</span>
+                        <a class="d-flex align-items-center text-muted" href="#" aria-label="Add a new report">
+                            <span data-feather="plus-circle"></span>
+                        </a>
+                    </h6>
+                    <ul class="nav flex-column mb-2">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span data-feather="file-text"></span>
+                                Info Page A
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span data-feather="file-text"></span>
+                                Info Page B
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span data-feather="file-text"></span>
+                                Info Page C
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">
+                                <span data-feather="file-text"></span>
+                                Info Page D
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            {% block main_area %}
+
+            {% endblock %}
+
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block footer %}
+    <div class="navbar-fixed-bottom">
+<div class="container-fluid" style="background-color: #f5f5f5;">
+<div class="row">
+    <div class="col-md-3 offset-9 text-right text-muted">
+        Copyright @2020 SIEMENS DSM
+    </div>
+</div>
+</div>
+    </div>
+{% endblock %}
+
+
+{% block customize_js %}
+
+{% endblock %}
+
+
+</body>
+</html>

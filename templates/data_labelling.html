@@ -1,0 +1,622 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+
+
+{% block main_area %}
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+        {# for main info and quick buttons #}
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h2 id="remainCarousel"> </h2>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group mr-2">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="Normal_all_btn">Label all to
+                        "Normal"
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="Abnormal_all_btn">Label all
+                        "Abnormal"
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" id="Delete_all_btn">Delete all
+                        unlabelled wave
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        {# for visualization and labelling #}
+        <div class="container-fluid">
+            <div class="row">
+
+                {# left area #}
+                <div class="col-md-10">
+
+                    {# for echarts area #}
+                    <div class="col-md-12" id="myChart">
+                        <div class="jumbotron jumbotron-fluid">
+                            <div class="container">
+                                <h1 class="display-4">Visualize the wave and label it!</h1>
+                                <p class="lead">Click the following table to select the wave file ...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {# for some buttons to select visualization type #}
+                    <div class="row col-md-12" style="margin-bottom: 15px">
+
+                        <div class="col-sm-3" style="text-align:center">
+                            <button class="btn btn-outline-info" disabled="disabled" id="Time_btn">Time Domain</button>
+                        </div>
+                        <div class="col-sm-3" style="text-align:center">
+                            <button class="btn btn-outline-info" disabled="disabled" id="Freq_btn">Frequency Domain
+                            </button>
+                        </div>
+                        <div class="col-sm-3" style="text-align:center">
+                            <button class="btn btn-outline-info" disabled="disabled" id="Power_btn">PSD Domain</button>
+                        </div>
+                        <div class="col-sm-3" style="text-align:center">
+                            <button class="btn btn-outline-info" disabled="disabled" id="Pubu_btn">Time-Freq Domain
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {# right area #}
+                <div class="col-md-2">
+
+                    <div style="margin-top: 50px">
+                        <h5>Select Channel:</h5>
+                        <select class="selectpicker show-tick" disabled data-style="btn-outline-info" data-width="auto"
+                                id="channelSelector">
+                        </select>
+                        <hr style="margin-top: 50px">
+                        <h5>Select Label:</h5>
+                        <div style="text-align:left">
+                            <select class="selectpicker show-tick" disabled data-style="btn-outline-info"
+                                    data-width="auto"
+                                    id="labelSelector">
+                            </select>
+                            <button class="btn btn-success" disabled="disabled" id="label_btn" style="margin-top: 5px">
+                                Label it!
+                            </button>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        {# for table to show the unlabelled wave #}
+        <hr>
+        <table id="wave_infoTable"
+               data-toggle="table"
+               striped="true"
+               data-search="false"
+               data-show-search-button="false"
+               data-show-refresh="false"
+               data-pagination="true"
+               data-side-pagination="server"        {# with server pagination #}
+               data-page-size="10"
+               data-page-list="[10, 20, 50, 80]"
+               data-url="{% url 'data_labelling:wave_table' %}"
+               data-method="get"
+               cache="false">
+            <thead>
+            <tr>
+                <th data-field="RIFFID">RIFFID</th>
+                <th data-field="Device_name">Device_name</th>
+                <th data-field="Time_stamp">Time_stamp</th>
+                <th data-field="Total_channels">Total_channels</th>
+                <th data-field="Label">Label</th>
+            </tr>
+            </thead>
+        </table>
+
+        {# for modal box when loading wave data #}
+        <div class="modal fade " data-backdrop="static" id="loadingModal">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="d-flex align-items-center">
+                            <strong>Loading...</strong>
+                            <div class="spinner-border ml-auto" role="status" aria-hidden="true"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block customize_js %}
+
+
+    {# JS for some initial code #}
+    <script type="text/javascript">
+        $.fn.selectpicker.Constructor.BootstrapVersion = '4';
+    </script>
+
+    {# inital echarts global value #}
+    <script type="text/javascript">
+        var myChart;
+        var dataObj;
+        var option;
+        var data_channel;
+        var labelSelected = 0;
+    </script>
+
+    {# JS for changing echarts content between in Time-domain Freq-Domain #}
+    <script type="text/javascript">
+
+        function drawTimeDomain() {
+            console.log(data_channel['channel_name'])
+            option = {
+                animation: true,
+                title: {
+                    text: "Time Domain Visualization",
+                },
+                tooltip: {},
+                yAxis: {
+                    type: 'value',
+                    splitLine: {
+                        show: true
+                    }
+                },
+                dataZoom: [
+                    {
+                        type: 'slider',
+                        show: true,
+                        xAxisIndex: [0],
+                        start: 0,
+                        end: 100
+                    },
+                    {
+                        type: 'slider',
+                        show: true,
+                        yAxisIndex: [0],
+                        left: '93%',
+                        start: 0,
+                        end: 100
+                    },
+                    {
+                        type: 'inside',
+                        xAxisIndex: [0],
+                        start: 1,
+                        end: 35,
+                        zoomOnMouseWheel: 'ctrl',
+                    },
+                    {
+                        type: 'inside',
+                        yAxisIndex: [0],
+                        start: 29,
+                        end: 36,
+                        zoomOnMouseWheel: 'alt',
+                    }
+                ],
+                legend: {
+                    data: ['acc_points', 'acc_env_points', 'vel_env_points']
+                },
+                xAxis: {
+                    splitLine: {
+                        show: true
+                    },
+                    data: dataObj['time_points'],
+                },
+                series: [
+                    {
+                        name: 'acc_points',
+                        type: 'line',
+                        data: data_channel['acc_points'],
+                    },
+                    {
+                        name: 'acc_env_points',
+                        type: 'line',
+                        data: data_channel['acc_env_points'],
+                    },
+                    {
+                        name: 'vel_env_points',
+                        type: 'line',
+                        data: dataObj['channel_list'][0]['vel_env_points'],
+                    },
+                ],
+            };
+            myChart.clear();
+            myChart.setOption(option);
+            console.log('We finished Time Domain picture!');
+        };
+
+        function drawFreqDomain() {
+            console.log(data_channel['channel_name']);
+            option = {
+                animation: true,
+                title: {
+                    text: "Frequency Domain Visualization",
+                },
+                tooltip: {},
+                yAxis: {
+                    type: 'value',
+                    splitLine: {
+                        show: true
+                    }
+                },
+                dataZoom: [
+                    {
+                        type: 'slider',
+                        show: true,
+                        xAxisIndex: [0],
+                        start: 0,
+                        end: 100
+                    },
+                    {
+                        type: 'slider',
+                        show: true,
+                        yAxisIndex: [0],
+                        left: '93%',
+                        start: 0,
+                        end: 100
+                    },
+                    {
+                        type: 'inside',
+                        xAxisIndex: [0],
+                        start: 1,
+                        end: 35,
+                        zoomOnMouseWheel: 'ctrl',
+                    },
+                    {
+                        type: 'inside',
+                        yAxisIndex: [0],
+                        start: 29,
+                        end: 36,
+                        zoomOnMouseWheel: 'alt',
+                    }
+                ],
+                legend: {
+                    data: ['acc_amp_points', 'vel_amp_points']
+                },
+                xAxis: {
+                    splitLine: {
+                        show: true
+                    },
+                    data: data_channel['freq_points'],
+                },
+                series: [
+                    {
+                        name: 'acc_amp_points',
+                        type: 'line',
+                        data: data_channel['acc_amp_points'],
+                    },
+                    {
+                        name: 'vel_amp_points',
+                        type: 'line',
+                        data: data_channel['vel_amp_points'],
+                    },
+                ],
+            };
+            myChart.clear();
+            myChart.setOption(option);
+            console.log('We finished Frequency Domain picture!');
+        };
+
+        function drawPDS() {
+            console.log(data_channel['channel_name']);
+            option = {
+                animation: true,
+                title: {
+                    text: "Power Spectral Density Visualization",
+                },
+                tooltip: {},
+                yAxis: {
+                    type: 'value',
+                    splitLine: {
+                        show: true
+                    }
+                },
+                dataZoom: [
+                    {
+                        type: 'slider',
+                        show: true,
+                        xAxisIndex: [0],
+                        start: 0,
+                        end: 100
+                    },
+                    {
+                        type: 'slider',
+                        show: true,
+                        yAxisIndex: [0],
+                        left: '93%',
+                        start: 0,
+                        end: 100
+                    },
+                    {
+                        type: 'inside',
+                        xAxisIndex: [0],
+                        start: 1,
+                        end: 35,
+                        zoomOnMouseWheel: 'ctrl',
+                    },
+                    {
+                        type: 'inside',
+                        yAxisIndex: [0],
+                        start: 29,
+                        end: 36,
+                        zoomOnMouseWheel: 'alt',
+                    }
+                ],
+                legend: {
+                    data: ['psd_points']
+                },
+                xAxis: {
+                    splitLine: {
+                        show: true
+                    },
+                    data: data_channel['psd_freq_points'],
+                },
+                series: [
+                    {
+                        name: 'psd_points',
+                        type: 'line',
+                        data: data_channel['psd_points'],
+                    },
+                ],
+            };
+            myChart.clear();
+            myChart.setOption(option);
+            console.log('We finished PSD picture!');
+        };
+
+
+        function makeGaussian(amplitude, x0, y0, sigmaX, sigmaY) {
+            return function (amplitude, x0, y0, sigmaX, sigmaY, x, y) {
+                var exponent = -(
+                    (Math.pow(x - x0, 2) / (2 * Math.pow(sigmaX, 2)))
+                    + (Math.pow(y - y0, 2) / (2 * Math.pow(sigmaY, 2)))
+                );
+                return amplitude * Math.pow(Math.E, exponent);
+            }.bind(null, amplitude, x0, y0, sigmaX, sigmaY);
+        };
+
+
+        $("#Time_btn").click(drawTimeDomain);
+        $("#Freq_btn").click(drawFreqDomain);
+        $("#Power_btn").click(drawPDS);
+        $("#Pubu_btn").click(function () {
+            console.log(data_channel['time-freq_points']);
+
+            option = {
+                animation: true,
+                title: {
+                    text: "To be finished",
+                },
+                grid3D: {},
+                xAxis3D: {'name': 'Frequency'},
+                yAxis3D: {'name': 'Time'},
+                zAxis3D: {'name': 'Amp'},
+                series: [{
+                    type: 'scatter3D',
+                    symbolSize: 5,
+                    data: data_channel['time-freq_points']
+                    // data: data
+                }]
+            }
+            myChart.clear();
+            myChart.setOption(option);
+            console.log('finished Time-Domain picture!');
+        });
+
+    </script>
+
+    {# JS for select channel and select label #}
+    <script type="text/javascript">
+        $("#channelSelector").on('show.bs.select', function () {
+            console.log(' I start to show it');
+        });
+        $("#channelSelector").on('shown.bs.select', function () {
+            console.log(' I fninsh to show it');
+        });
+        $("#channelSelector").on('hide.bs.select', function () {
+            console.log(' I start to hide it');
+        });
+        $("#channelSelector").on('hidden.bs.select', function () {
+            console.log(' I finished to hide it');
+        });
+
+        $('#channelSelector').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+            console.log(' I changed channel');
+            console.log("clickedIndex", clickedIndex);
+            data_channel = dataObj['channel_list'][clickedIndex];
+            console.log(data_channel['channel_name']);
+            drawTimeDomain();
+        });
+
+        $('#labelSelector').on('changed.bs.select', function (e, clickedIndex, isSelected, previousValue) {
+            console.log(' I changed label');
+            labelSelected = clickedIndex;
+            console.log(labelSelected);
+
+        });
+
+
+    </script>
+
+    {# JS for selecting wave file by click the row of table #}
+    <script type="text/javascript">
+        {# So far : just only use Time_stamp to filter the wave file #}
+
+        function getWaveData(Time_stamp, Device_name) {
+            console.log(Time_stamp, 'I am going to get data from MongoDB');
+            $.ajax(
+                {# it is URL #}
+                "{% url "data_labelling:wave_pic" %}",
+                {# it is SETTING #}
+                {
+                    data: {'Time_stamp': Time_stamp, 'Device_name': Device_name},
+                    method: "POST",
+                    dataType: 'JSON',
+                    cache: false,
+                    beforeSend: function (jqXHR, settings) {
+                        console.log('I am going to send my request!');
+                        console.log('please wait......');
+                        $('#loadingModal').modal('show');
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        {# hide the longding modal #}
+                        $('#loadingModal').modal('hide');
+
+                        {# initial the echarts area#}
+                        $('#myChart').height(500);
+                        myChart = echarts.init(document.getElementById('myChart'));
+                        window.addEventListener('resize', function () {
+                            console.log('Echarts resizing');
+                            myChart.resize();
+                        });
+
+                        {# initial the wave data #}
+                        dataObj = Object(data);
+                        console.log('get all results successfully!');
+                        {% comment for bianli %}
+                        for (var item in dataObj) {
+                            if (item == 'channel_list') {
+                                console.log(' I am Here')
+                                for (var foo in dataObj['channel_list']) {
+                                    for (var foo_foo in dataObj['channel_list'][foo]) {
+                                        console.log(foo, foo_foo, typeof dataObj['channel_list'][foo][foo_foo], dataObj['channel_list'][foo][foo_foo]);
+                                    }
+
+                                }
+                            } else {
+                                console.log(item, typeof dataObj[item], dataObj[item])
+                            }
+                        }
+                        {% endcomment %}
+
+                        {# enable some visualization-type-change buttons #}
+                        $('#Time_btn').attr("disabled", false);
+                        $('#Freq_btn').attr("disabled", false);
+                        $('#Power_btn').attr("disabled", false);
+                        $('#Pubu_btn').attr("disabled", false);
+                        $('#label_btn').attr("disabled", false);
+
+                        {# enable the channel selector #}
+                        $('#channelSelector').removeAttr("disabled");
+                        $('#channelSelector').empty();
+                        for (var foo in dataObj['channel_list']) {
+                            $('#channelSelector').append($("<option></option>").text(dataObj['channel_list'][foo]['channel_name']));
+                        }
+                        ;
+                        $('#channelSelector').selectpicker('refresh');
+                        $('#channelSelector').selectpicker('render');
+
+                        {# enable the label selector #}
+                        $('#labelSelector').removeAttr("disabled");
+                        $('#labelSelector').empty();
+                        $('#labelSelector').append(
+                            $("<option></option>").text("0"),
+                            $("<option></option>").text("1"),
+                            $("<option></option>").text("2"),
+                            $("<option></option>").text("3"),
+                            $("<option></option>").text("4")
+                        );
+                        $('#labelSelector').selectpicker('refresh');
+                        $('#labelSelector').selectpicker('render');
+
+
+                        {# set the channel 0 for default channel #}
+                        data_channel = dataObj['channel_list'][0];
+                        console.log('initial default channel successfully!');
+
+                        {# draw the time domain for default #}
+                        drawTimeDomain();
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        $('#loadingModal').modal('hide');
+                        alert('failed! try again! God bless you! ')
+                        console.log('!!!!!something error happened!!!!!!!');
+                    }
+                }
+            );
+
+
+        };
+
+        $('#wave_infoTable').on('click-row.bs.table', function (row, $element, field) {
+            console.log(' I am clicked!');
+            console.log('click selected', $element['Time_stamp'], typeof $element['Time_stamp']);
+            getWaveData($element['Time_stamp'], $element['Device_name']);
+        });
+    </script>
+
+    {# JS for Update h2 when table refreshing data #}
+    <script type="text/javascript">
+    $('#wave_infoTable').on('load-success.bs.table', function (data, status, jqXHR) {
+        console.log('data', data);
+        console.log('status',status['total']);
+        console.log('jqXHR', jqXHR);
+        $("#remainCarousel").text('There are '+ status['total'] +' wave file records to label')
+    })
+    </script>
+
+    {# JS for label data action #}
+    <script type="text/javascript">
+        function labelWave(Time_stamp, Device_name, Label) {
+            $.ajax(
+                {# it is URL #}
+                "{% url "data_labelling:wave_label" %}",
+                {# it is SETTING #}
+                {
+                    data: {'Time_stamp': Time_stamp, 'Device_name': Device_name, 'Label': Label},
+                    method: "POST",
+                    dataType: 'JSON',
+                    cache: false,
+                    beforeSend: function (jqXHR, settings) {
+                        console.log('I am going to send my request!');
+                        console.log('please wait......');
+                        // $('#loadingModal').modal('show');
+                        var day1 = new Date();
+                        var now_t = new Date(day1.getTime());
+                        console.log(now_t.toLocaleString());
+                    },
+                    success: function (data, textStatus, jqXHR) {
+                        // $('#loadingModal').modal('hide');
+                        console.log(data);
+                        var day1 = new Date();
+                        var now_t = new Date(day1.getTime());
+                        console.log(now_t.toLocaleString());
+                        console.log('label successfully');
+
+                        {# refresh the table #}
+                        $('#wave_infoTable').bootstrapTable('refresh');
+                        console.log('table has been refreshed');
+
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.log('error when sending label to sever')
+                    }
+                }
+            );
+        };
+
+        $('#label_btn').click(function () {
+            console.log('I am clicked');
+            console.log(dataObj['time_stamp'], dataObj['device_name']);
+            labelWave(dataObj['time_stamp'], dataObj['device_name'], labelSelected);
+        })
+    </script>
+
+    {# JS for one-key to operator all wave #}
+    <script type="text/javascript">
+        $('#Normal_all_btn').click(function () {
+            alert('Please do labelling carefully!! \nThis function is not ready.');
+        });
+        $('#Abnormal_all_btn').click(function () {
+            alert('Please do labelling carefully!! \nThis function is not ready.');
+        });
+        $('#Delete_all_btn').click(function () {
+            alert('Please do labelling carefully!! \nThis function is not ready.');
+        });
+    </script>
+
+
+
+{% endblock %}

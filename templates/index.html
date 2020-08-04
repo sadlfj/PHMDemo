@@ -1,0 +1,218 @@
+{% load staticfiles %}
+<!doctype html>
+<html lang="en">
+<head>
+
+    <title>Dashboard Template · Bootstrap</title>
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.5/examples/dashboard/">
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <script type="text/javascript" src="{% static 'js/echarts.js' %}" ></script>
+
+</head>
+<body>
+<nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+    <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">SIEMENS</a>
+
+
+    <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-toggle="collapse"
+            data-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <input class="form-control form-control-dark w-100" type="text" placeholder="Just an input field for happiness" aria-label="Search">
+    <ul class="navbar-nav px-3">
+        <li class="nav-item text-nowrap">
+            <a class="nav-link" href="#">Sign out</a>
+        </li>
+    </ul>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+            <div class="sidebar-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">
+                            Home
+                            <span data-feather="home"></span><span class="sr-only">(current)</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="shopping-cart"></span>
+                            Data Labelling
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="shopping-cart"></span>
+                            Connection Setting
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="shopping-cart"></span>
+                            balbala....
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="shopping-cart"></span>
+                            balbala....
+                        </a>
+                    </li>
+
+                </ul>
+                <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                    <span>Maybe Info</span>
+                    <a class="d-flex align-items-center text-muted" href="#" aria-label="Add a new report">
+                        <span data-feather="plus-circle"></span>
+                    </a>
+                </h6>
+                <ul class="nav flex-column mb-2">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="file-text"></span>
+                            Info Page A
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="file-text"></span>
+                            Info Page B
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="file-text"></span>
+                            Info Page C
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <span data-feather="file-text"></span>
+                            Info Page D
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h2 >The Title -- It is too tough to give you a name </h2>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group mr-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary">BUTTON protect</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary">BUTTON no-protect</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary">BUTTON protect</button>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
+                        <span data-feather="calendar"></span>
+                        Click ! A Dragon Dance
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-12" id="myChart" style="height: 700px;"></div>
+            <h2>Look ! The unlabelled series will show here </h2>
+            <div class="table-responsive">
+                <table class="table table-striped ">
+                    <thead>
+                    <tr class="table-primary">
+                        <th>#</th>
+                        <th>Device Name</th>
+                        <th>Wave Timestamp</th>
+                        <th>Labelling Status</th>
+                        <th>Label</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>2005K0103</td>
+                        <td>2020-05-26 23:00:00</td>
+                        <td>Labelled</td>
+                        <td>Normal</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>2005K0103</td>
+                        <td>2020-05-26 23:00:00</td>
+                        <td>Labelled</td>
+                        <td>Normal</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>2005K0103</td>
+                        <td>2020-05-26 23:00:00</td>
+                        <td>Labelled</td>
+                        <td>Normal</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td>2005K0103</td>
+                        <td>2020-05-26 23:00:00</td>
+                        <td>Labelled</td>
+                        <td>Normal</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td>2005K0103</td>
+                        <td>2020-05-26 23:00:00</td>
+                        <td>Labelled</td>
+                        <td>Normal</td>
+                    </tr>
+                    <tr>
+                        <td>6</td>
+                        <td>2005K0103</td>
+                        <td>2020-05-26 23:00:00</td>
+                        <td>Unlabelled</td>
+                        <td>NULL</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+
+            {% comment %}
+            {% endcomment %}
+        </main>
+    </div>
+</div>
+
+<div class="col-md-2 offset-10">
+    Thank you ! @2020 SIEMENS DSM
+</div>
+<script type="text/javascript">
+
+    var dom = document.getElementById("myChart");
+    var myChart = echarts.init(dom);
+    var option = {
+        title: {
+            text: 'It is the Data Visualization Area',
+        },
+        tooltip: {},
+        legend: {
+            data: ['A'],
+            top: "3%",
+        },
+        xAxis: {
+            data: ["A", "B", "X", "D", "E", "F"]
+        },
+        yAxis: {},
+        series: [{
+            name: 'A',
+            type: 'bar',
+            data: [5, 20, 36, 10, 10, 20]
+        }]
+    };
+
+    myChart.setOption(option);
+</script>
+
+
+
+
+</body>
+</html>
